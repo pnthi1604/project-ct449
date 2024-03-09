@@ -2,17 +2,19 @@ const express = require('express');
 const {
     EmployeeController,
 } = require('../controllers/index.js');
-const auth = require('../middleware/auth.js');
+const {
+    authMiddleware
+} = require('../middleware/index.js')
 
 const router = express.Router();
 
 router.route('/')
-    .get(EmployeeController.getAll)
-    .post(EmployeeController.create)
+    .get(authMiddleware.adminAuth, EmployeeController.getAll)
+    .post(authMiddleware.adminAuth, EmployeeController.create)
 
 router.route('/:id')
-    .get(EmployeeController.getById)
-    .put(EmployeeController.update)
-    .delete(auth.adminAuth, EmployeeController.delete)
+    .get(authMiddleware.adminAuth, EmployeeController.getById)
+    .put(authMiddleware.adminAuth, EmployeeController.update)
+    .delete(authMiddleware.adminAuth, EmployeeController.delete)
 
 module.exports = router;

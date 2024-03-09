@@ -2,12 +2,14 @@ const express = require('express');
 const {
     UserController,
 } = require('../controllers/index.js');
-const auth = require('../middleware/auth.js');
+const {
+    authMiddleware
+} = require('../middleware/index.js')
 
 const router = express.Router();
 
 router.route('/')
-    .get(UserController.getAll)
+    .get(authMiddleware.adminAuth, UserController.getAll)
     .post(UserController.create)
 
 router.route('/:id')

@@ -1,8 +1,10 @@
 const express = require('express');
+require('dotenv').config();
 const cors = require('cors');
 const ApiError = require('./error/api-error.js');
-const handleError = require('./middleware/handle-error.js');
-require('dotenv').config();
+const {
+    handleErrorMiddleware,
+} = require('./middleware/index.js')
 const {
     UserRouter,
     EmployeeRouter,
@@ -30,7 +32,7 @@ app.use((req, res, next) => {
     return next(new ApiError(404, "Resource not found"));
 });
 app.use((err, req, res, next) => {
-    err = handleError(err);
+    err = handleErrorMiddleware(err);
     return res.status(err.statusCode).json({
         message: err.message,
     });

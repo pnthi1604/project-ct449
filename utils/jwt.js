@@ -1,7 +1,7 @@
 const jwtSecret = process.env.JWT_SECRET;
 const jwt = require('jsonwebtoken');
 
-const maxAge = process.env.MAXAGE
+const maxAge = 3 * 60 * 60
 
 let createJWT = ({response, id, email, role}) => {
     const token = jwt.sign(

@@ -1,5 +1,5 @@
 const jwtUtil = require("./jwt.js")
-const hashPasswordUtil = require("./hash-password.js")
+const hashPasswordUtil = require("./hashPassword.js")
 
 module.exports = {
     jwtUtil,

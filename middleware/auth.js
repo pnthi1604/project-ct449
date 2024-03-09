@@ -1,8 +1,7 @@
 const jwt = require('jsonwebtoken');
-const handleError = require('./handle-error.js');
 const ApiError = require('../error/api-error.js');
 
-const jwtSecret = process.env.JWT_SECRET;
+const jwtSecret = process.env.JWT_SECRET
 
 exports.adminAuth = async (req, res, next) => {
     try {
@@ -14,7 +13,7 @@ exports.adminAuth = async (req, res, next) => {
             return next();
         throw new ApiError(401, "Not authorized");
     } catch (err) {
-        next(handleError(err));
+        next(err);
     }
 };
 
@@ -28,6 +27,6 @@ exports.userAuth = async (req, res, next) => {
             next();
         throw new ApiError(401, "Not authorized");
     } catch(err) {
-        next(handleError(err));
+        next(err);
     }
 };
