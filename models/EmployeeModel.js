@@ -4,11 +4,11 @@ const Schema = mongoose.Schema;
 const EmployeeSchema = new Schema({
     name: {
         type: String,
-        required: true,
+        required: [true, "Name is required"],
     },
     password: {
         type: String,
-        required: true,
+        required: [true, "Password is required"],
     },
     position: {
         type: String,
@@ -16,15 +16,15 @@ const EmployeeSchema = new Schema({
     },
     address: {
         type: String,
-        required: true,
+        required: [true, "Address is required"],
     },
     phone: {
         type: String,
-        required: true,
+        required: [true, "Phone is required"],
     },
     email: {
         type: String,
-        required: true,
+        required: ["Email is required"],
     }
 });
 

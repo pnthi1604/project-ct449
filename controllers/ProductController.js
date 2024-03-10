@@ -3,11 +3,25 @@ const ApiError = require('../error/ApiError.js');
 const util = require('../utils/index.js')
 const service = require("../services/index.js")
 
+exports.getPublisher = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const book = await service.ProductService.getById(id)
+        const result = await service.PublisherService.getById(book.publisher)
+        res.status(200).json({
+            message: "Get publisher successfully",
+            data: result,
+        })
+    } catch (err) {
+        next(err)
+    }
+}
+
 exports.getAll = async (req, res, next) => {
     try {
-        const result = await service.UserService.getAll();
+        const result = await service.ProductService.getAll();
         res.status(200).json({
-            message: "Get all user successfully",
+            message: "Get all book successfully",
             data: result,
         });
     } catch (err) {
@@ -19,13 +33,13 @@ exports.getById = async (req, res, next) => {
     try {
         const id = req.params.id;
         if (!(mongoose.Types.ObjectId.isValid(id))) {
-            throw new ApiError(400, "User id is not valid");
+            throw new ApiError(400, "Book id is not valid");
         }
-        const result = await service.UserService.getById(id);
+        const result = await service.ProductService.getById(id);
         if (!result)
-            throw new ApiError(400, "User not exist");
+            throw new ApiError(400, "Book not exist");
         res.status(200).json({
-            message: "Get user successfully",
+            message: "Get book successfully",
             data: result,
         });
     } catch (err) {
@@ -36,13 +50,13 @@ exports.getById = async (req, res, next) => {
 exports.create = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        if (await service.UserService.getByEmail(email))
-            throw new ApiError(400, 'The user\'s email already exists.');
+        if (await service.ProductService.getByEmail(email))
+            throw new ApiError(400, 'The book\'s email already exists.');
         const data = req.body;
         data.password = data.password = await util.hashPasswordUtil.hashPassword({ password });
-        const result = await service.UserService.create(data);
+        const result = await service.ProductService.create(data);
         res.status(201).json({
-            message: "Create user successfully",
+            message: "Create book successfully",
             data: result,
         });
     } catch (err) {
@@ -54,17 +68,17 @@ exports.delete = async (req, res, next) => {
     try {
         const id = req.params.id;
         if (!(mongoose.Types.ObjectId.isValid(id))) {
-            throw new ApiError(400, "User id is not valid");
+            throw new ApiError(400, "Book id is not valid");
         }
-        const result = await service.UserService.delete(id);
+        const result = await service.ProductService.delete(id);
         if (result.deletedCount)
             res.status(200).json({
-                message: "Delete user successfully",
+                message: "Delete book successfully",
                 data: result,
             });
         else
             res.status(400).json({
-                message: "User id not exist",
+                message: "Book id not exist",
                 data: result,
             });
     } catch (err) {
@@ -76,14 +90,14 @@ exports.update = async (req, res, next) => {
     try {
         const id = req.params.id;
         if (!(mongoose.Types.ObjectId.isValid(id))) {
-            throw new ApiError(400, "User id is not valid");
+            throw new ApiError(400, "Book id is not valid");
         }
         const data = req.body;
         if (data.password)
             data.password = await util.hashPasswordUtil.hashPassword({ password: data.password })
-        const result = await service.UserService.update({id: id, data});
+        const result = await service.ProductService.update({id: id, data});
         res.status(200).json({
-            message: "Update user successfully",
+            message: "Update book successfully",
             data: result,
         });
     } catch (err) {

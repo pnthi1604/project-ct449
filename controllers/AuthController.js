@@ -1,27 +1,25 @@
-const { 
-    UserService,
-    EmployeeService,
-} = require('../services/index.js');
-const ApiError = require('../error/api-error.js');
-const bcrypt = require('bcrypt');
-const {
-    jwtUtil,
-    hashPasswordUtil,
-} = require('../utils/index.js')
+const ApiError = require('../error/ApiError.js');
+const util = require('../utils/index.js')
+const service = require("../services/index.js")
+
+const adminRole = process.env.ADMIN_ROLE
+const userRole = process.env.USER_ROLE
 
 exports.register = async (req, res, next) => {
     try {
         const data = req.body;
-        if (await UserService.getByEmail(data.email) || await EmployeeService.getByEmail(data.email))
+        if (await service.UserService.getByEmail(data.email) || await service.EmployeeService.getByEmail(data.email))
             throw new ApiError(400, 'The user\'s email already exists.');
-        data.password = await hashPasswordUtil.hashPassword({ password: data.password })
-        const user = await UserService.create(data);
-        jwtUtil.createJWT(
+        data.password = await util.hashPasswordUtil.hashPassword({ password: data.password })
+        const user = await service.UserService.create(data);
+        util.jwtUtil.createJWT(
             {
                 response: res,
-                id: user.id, 
-                email: user.email, 
-                role: "basic",
+                data: {
+                    id: user.id, 
+                    email: user.email, 
+                    role: userRole,
+                },
             }
         )
         res.status(200).json({
@@ -36,20 +34,22 @@ exports.register = async (req, res, next) => {
 exports.login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        const user = await UserService.getByEmail(email);
-        const employee = await EmployeeService.getByEmail(email)
-        const correctPassword = await hashPasswordUtil.comparePassword({
+        const user = await service.UserService.getByEmail(email);
+        const employee = await service.EmployeeService.getByEmail(email)
+        const correctPassword = await util.hashPasswordUtil.comparePassword({
             password,
-            hashPassword: user ? user.password : employee.password
+            hashPassword: user ? user.password : employee.password,
         })
         if (!correctPassword)
             throw new ApiError(400, "Password is wrong");
-        jwtUtil.createJWT(
+        util.jwtUtil.createJWT(
             {
                 response: res,
-                id: user ? user.id : employee.id, 
-                email: user ? user.email : employee.email, 
-                role: user ? "basic" : "admin",
+                data: {
+                    id: user ? user.id : employee.id, 
+                    email: user ? user.email : employee.email, 
+                    role: user ? userRole : adminRole,
+                },
             }
         )
 
@@ -64,7 +64,7 @@ exports.login = async (req, res, next) => {
 
 exports.logout = async (req, res, next) => {
     try {
-        jwtUtil.resetJWT({ response: res })
+        util.jwtUtil.resetJWT({ response: res })
         res.status(200).json({
             message: "Logout successfully",
         });

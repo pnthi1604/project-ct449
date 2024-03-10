@@ -1,27 +1,28 @@
-const EmployeeModel = require('../models/EmployeeModel.js');
+const model = require("../models/index.js")
 
 exports.create = async (employee) => {
-    const result = await EmployeeModel.create(employee);
+    const result = await model.EmployeeModel.create(employee);
     return result;
 };
 
 exports.getAll = async () => {
-    const result = await EmployeeModel.find({});
+    const result = await model.EmployeeModel.find({});
     return result;
 };
 
 exports.getById = async (id) => {
-    const result = await EmployeeModel.findOne({ _id: id });
+    const result = await model.EmployeeModel.findOne({ _id: id });
     return result;
 };
 
 exports.getByEmail = async (email) => {
-    const result = await EmployeeModel.findOne({ email });
+    const result = await model.EmployeeModel.findOne({ email });
     return result;
 };
 
+
 exports.delete = async (id) => {
-    const result = await EmployeeModel.deleteOne({ _id: id });
+    const result = await model.EmployeeModel.deleteOne({ _id: id });
     return result;
 }
 
@@ -31,6 +32,6 @@ exports.update = async ({id, data}) => {
     if (!isExist)
         result = await this.create(data);
     else
-        result = await UserModel.findOneAndUpdate({ _id: id }, data);
+        result = await model.EmployeeModel.findOneAndUpdate({ _id: id }, data);
     return result;
 };

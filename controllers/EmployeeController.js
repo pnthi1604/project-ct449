@@ -1,15 +1,13 @@
-const { EmployeeService } = require('../services/index.js');
 const mongoose = require('mongoose');
-const ApiError = require('../error/api-error.js');
-const {
-    hashPasswordUtil,
-} = require('../utils/index.js')
+const ApiError = require('../error/ApiError.js');
+const util = require('../utils/index.js')
+const service = require("../services/index.js")
 
 exports.getAll = async (req, res, next) => {
     try {
-        const result = await EmployeeService.getAll();
+        const result = await service.EmployeeService.getAll();
         res.status(200).json({
-            message: "Get all user successfully",
+            message: "Get all employee successfully",
             data: result,
         });
     } catch (err) {
@@ -21,13 +19,13 @@ exports.getById = async (req, res, next) => {
     try {
         const id = req.params.id;
         if (!(mongoose.Types.ObjectId.isValid(id))) {
-            throw new ApiError(400, "User id is not valid");
+            throw new ApiError(400, "Employee id is not valid");
         }
-        const result = await EmployeeService.getById(id);
+        const result = await service.EmployeeService.getById(id);
         if (!result)
-            throw new ApiError(400, "User not exist");
+            throw new ApiError(400, "Employee not exist");
         res.status(200).json({
-            message: "Get user successfully",
+            message: "Get employee successfully",
             data: result,
         });
     } catch (err) {
@@ -38,13 +36,13 @@ exports.getById = async (req, res, next) => {
 exports.create = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        if (await EmployeeService.getByEmail(email))
-            throw new ApiError(400, 'The user\'s email already exists.');
+        if (await service.EmployeeService.getByEmail(email))
+            throw new ApiError(400, 'The employee\'s email already exists.');
         const data = req.body;
-        data.password = data.password = await hashPasswordUtil.hashPassword({ password });
-        const result = await EmployeeService.create(data);
+        data.password = data.password = await util.hashPasswordUtil.hashPassword({ password });
+        const result = await service.EmployeeService.create(data);
         res.status(201).json({
-            message: "Create user successfully",
+            message: "Create employee successfully",
             data: result,
         });
     } catch (err) {
@@ -56,17 +54,17 @@ exports.delete = async (req, res, next) => {
     try {
         const id = req.params.id;
         if (!(mongoose.Types.ObjectId.isValid(id))) {
-            throw new ApiError(400, "User id is not valid");
+            throw new ApiError(400, "Employee id is not valid");
         }
-        const result = await EmployeeService.delete(id);
+        const result = await service.EmployeeService.delete(id);
         if (result.deletedCount)
             res.status(200).json({
-                message: "Delete user successfully",
+                message: "Delete employee successfully",
                 data: result,
             });
         else
             res.status(400).json({
-                message: "User id not exist",
+                message: "Employee id not exist",
                 data: result,
             });
     } catch (err) {
@@ -78,14 +76,14 @@ exports.update = async (req, res, next) => {
     try {
         const id = req.params.id;
         if (!(mongoose.Types.ObjectId.isValid(id))) {
-            throw new ApiError(400, "User id is not valid");
+            throw new ApiError(400, "Employee id is not valid");
         }
         const data = req.body;
         if (data.password)
-            data.password = await hashPasswordUtil.hashPassword({ password: data.password })
-        const result = await EmployeeService.update({id: id, data});
+            data.password = await util.hashPasswordUtil.hashPassword({ password: data.password })
+        const result = await service.EmployeeService.update({id: id, data});
         res.status(200).json({
-            message: "Update user successfully",
+            message: "Update employee successfully",
             data: result,
         });
     } catch (err) {

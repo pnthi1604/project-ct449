@@ -1,15 +1,9 @@
 const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
-const ApiError = require('./error/api-error.js');
-const {
-    handleErrorMiddleware,
-} = require('./middleware/index.js')
-const {
-    UserRouter,
-    EmployeeRouter,
-    AuthRouter,
-} = require('./routes/index.js');
+const ApiError = require('./error/ApiError.js');
+const middleware = require('./middleware/index.js')
+const router = require('./routes/index.js');
 const cookieParser = require('cookie-parser');
 
 const app = express();
@@ -24,17 +18,19 @@ app.get('/', (req, res) => {
     });
 });
 
-app.use("/", AuthRouter);
-app.use('/user', UserRouter);
-app.use('/employee', EmployeeRouter);
+app.use('/', router.AuthRouter);
+app.use('/user', router.UserRouter);
+app.use('/employee', router.EmployeeRouter);
+app.use('/product', router.ProductRouter);
+app.use('/cart', router.CartRouter)
 
 app.use((req, res, next) => {
     return next(new ApiError(404, "Resource not found"));
 });
 app.use((err, req, res, next) => {
-    err = handleErrorMiddleware(err);
-    return res.status(err.statusCode).json({
-        message: err.message,
+    const { statusCode, message } = middleware.handleErrorMiddleware(err);
+    return res.status(statusCode).json({
+        message
     });
 });
 
