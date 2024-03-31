@@ -1,9 +1,9 @@
-const jwtUtil = require("./jwt.js")
-const hashPasswordUtil = require("./hashPassword.js")
+const jwt = require("./jwt.js")
+const hashPassword = require("./hashPassword.js")
 const isObjectId = require("./isObjectId.js")
 
 module.exports = {
-    jwtUtil,
-    hashPasswordUtil,
+    jwt,
+    hashPassword,
     isObjectId,
 };

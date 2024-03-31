@@ -1,15 +1,15 @@
-const UserService = require('./UserService.js');
-const EmployeeService = require('./EmployeeService.js');
-const ProductService = require('./ProductService.js')
-const PublisherService = require('./PublisherService.js')
-const CartService = require('./CartService.js')
-const OrderService = require('./OrderService.js')
+const User = require('./user.js');
+const Employee = require('./employee.js');
+const Product = require('./product.js')
+const Publisher = require('./publisher.js')
+const Cart = require('./cart.js')
+const Order = require('./order.js')
 
 module.exports = {
-    UserService,
-    EmployeeService,
-    ProductService,
-    PublisherService,
-    CartService,
-    OrderService,
+    User,
+    Employee,
+    Product,
+    Publisher,
+    Cart,
+    Order,
 };

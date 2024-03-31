@@ -1,17 +1,17 @@
-const UserRouter = require('./UserRouter.js');
-const EmployeeRouter = require('./EmployeeRouter.js');
-const AuthRouter = require('./AuthRouter.js');
-const ProductRouter = require('./ProductRouter.js')
-const PublisherRouter = require('./PublisherRouter.js')
-const CartRouter = require('./CartRouter.js')
-const OrderRouter = require('./OrderRouter.js')
+const User = require('./user.js');
+const Employee = require('./employee.js');
+const Auth = require('./auth.js');
+const Product = require('./product.js')
+const Publisher = require('./publisher.js')
+const Cart = require('./cart.js')
+const Order = require('./order.js')
 
 module.exports = {
-    UserRouter,
-    EmployeeRouter,
-    AuthRouter,
-    ProductRouter,
-    PublisherRouter,
-    CartRouter,
-    OrderRouter,
+    User,
+    Employee,
+    Auth,
+    Product,
+    Publisher,
+    Cart,
+    Order,
 };

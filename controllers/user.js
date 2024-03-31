@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
-const ApiError = require('../error/ApiError.js');
+const ApiError = require('../error/apiError.js');
 const util = require('../utils/index.js')
 const service = require("../services/index.js")
 
 exports.getAll = async (req, res, next) => {
     try {
-        const result = await service.UserService.getAll();
+        const result = await service.User.getAll();
         res.status(200).json({
             message: "Get all user successfully",
             data: result,
@@ -21,7 +21,7 @@ exports.getById = async (req, res, next) => {
         if (!(mongoose.Types.ObjectId.isValid(id))) {
             throw new ApiError(400, "User id is not valid");
         }
-        const result = await service.UserService.getById(id);
+        const result = await service.User.getById(id);
         if (!result)
             throw new ApiError(400, "User not exist");
         res.status(200).json({
@@ -36,11 +36,11 @@ exports.getById = async (req, res, next) => {
 exports.create = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        if (await service.UserService.getByEmail(email))
+        if (await service.User.getByEmail(email))
             throw new ApiError(400, 'The user\'s email already exists.');
         const data = req.body;
-        data.password = data.password = await util.hashPasswordUtil.hashPassword({ password });
-        const result = await service.UserService.create(data);
+        data.password = data.password = await util.hashPassword.hashPassword({ password });
+        const result = await service.User.create(data);
         res.status(201).json({
             message: "Create user successfully",
             data: result,
@@ -56,7 +56,7 @@ exports.delete = async (req, res, next) => {
         if (!(mongoose.Types.ObjectId.isValid(id))) {
             throw new ApiError(400, "User id is not valid");
         }
-        const result = await service.UserService.delete(id);
+        const result = await service.User.delete(id);
         if (result.deletedCount)
             res.status(200).json({
                 message: "Delete user successfully",
@@ -80,8 +80,8 @@ exports.update = async (req, res, next) => {
         }
         const data = req.body;
         if (data.password)
-            data.password = await util.hashPasswordUtil.hashPassword({ password: data.password })
-        const result = await service.UserService.update({id: id, data});
+            data.password = await util.hashPassword.hashPassword({ password: data.password })
+        const result = await service.User.update({id: id, data});
         res.status(200).json({
             message: "Update user successfully",
             data: result,

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const ApiError = require('../error/ApiError.js');
+const ApiError = require('../error/apiError.js');
 
 const jwtSecret = process.env.JWT_SECRET
 const adminRole = process.env.ADMIN_ROLE
