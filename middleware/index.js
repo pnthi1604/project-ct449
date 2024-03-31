@@ -1,7 +1,7 @@
-const authMiddleware = require('./auth.js')
-const handleErrorMiddleware = require('./handleError.js')
+const auth = require('./auth.js')
+const handleError = require('./handleError.js')
 
 module.exports = {
-    authMiddleware,
-    handleErrorMiddleware,
+    auth,
+    handleError,
 }

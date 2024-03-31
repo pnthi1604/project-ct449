@@ -1,4 +1,4 @@
-const ApiError = require('../error/ApiError.js');
+const ApiError = require('../error/apiError.js');
 const util = require('../utils/index.js')
 const service = require("../services/index.js")
 
@@ -8,11 +8,11 @@ const userRole = process.env.USER_ROLE
 exports.register = async (req, res, next) => {
     try {
         const data = req.body;
-        if (await service.UserService.getByEmail(data.email) || await service.EmployeeService.getByEmail(data.email))
+        if (await service.User.getByEmail(data.email) || await service.Employee.getByEmail(data.email))
             throw new ApiError(400, 'The user\'s email already exists.');
-        data.password = await util.hashPasswordUtil.hashPassword({ password: data.password })
-        const user = await service.UserService.create(data);
-        util.jwtUtil.createJWT(
+        data.password = await util.hashPassword.hashPassword({ password: data.password })
+        const user = await service.User.create(data);
+        util.jwt.createJWT(
             {
                 response: res,
                 data: {
@@ -34,15 +34,15 @@ exports.register = async (req, res, next) => {
 exports.login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        const user = await service.UserService.getByEmail(email);
-        const employee = await service.EmployeeService.getByEmail(email)
-        const correctPassword = await util.hashPasswordUtil.comparePassword({
+        const user = await service.User.getByEmail(email);
+        const employee = await service.Employee.getByEmail(email)
+        const correctPassword = await util.hashPassword.comparePassword({
             password,
             hashPassword: user ? user.password : employee.password,
         })
         if (!correctPassword)
             throw new ApiError(400, "Password is wrong");
-        util.jwtUtil.createJWT(
+        util.jwt.createJWT(
             {
                 response: res,
                 data: {
@@ -64,9 +64,9 @@ exports.login = async (req, res, next) => {
 
 exports.logout = async (req, res, next) => {
     try {
-        util.jwtUtil.resetJWT({ response: res })
+        util.jwt.resetJWT({ response: res })
         res.status(200).json({
-            message: "Logout successfully",
+            message: "Log out successfully",
         });
     } catch (err) {
         next(err);

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const testEmail = require('email-validator');
+const validator = require('validator')
 
 const UserSchema = new mongoose.Schema({
     lastName: {
@@ -36,9 +36,18 @@ const UserSchema = new mongoose.Schema({
     }
 });
 
-// UserSchema.path('email').validate(async function (value) {
-//     return testEmail.validate(value);
-// }, 'Email is not valid.');
+UserSchema.path('email').validate({
+    validator: function(value) {
+        if (validator.isEmail(value))
+            return true 
+        return false
+    },
+    message: function(props) {
+        if (!validator.isEmail(props.value))
+            return "Email is not valid"
+        return "An error has occurred"
+    },
+})
 
 const User = mongoose.model("User", UserSchema);
 module.exports = User;

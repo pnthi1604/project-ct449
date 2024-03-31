@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
-const ApiError = require('../error/ApiError.js');
+const ApiError = require('../error/apiError.js');
 const util = require('../utils/index.js')
 const service = require("../services/index.js")
 
 exports.getAll = async (req, res, next) => {
     try {
-        const result = await service.UserService.getAll();
+        const result = await service.Order.getAll();
         res.status(200).json({
-            message: "Get all user successfully",
+            message: "Get all order successfully",
             data: result,
         });
     } catch (err) {
@@ -19,13 +19,13 @@ exports.getById = async (req, res, next) => {
     try {
         const id = req.params.id;
         if (!(mongoose.Types.ObjectId.isValid(id))) {
-            throw new ApiError(400, "User id is not valid");
+            throw new ApiError(400, "Order id is not valid");
         }
-        const result = await service.UserService.getById(id);
+        const result = await service.Order.getById(id);
         if (!result)
-            throw new ApiError(400, "User not exist");
+            throw new ApiError(400, "Order not exist");
         res.status(200).json({
-            message: "Get user successfully",
+            message: "Get order successfully",
             data: result,
         });
     } catch (err) {
@@ -35,14 +35,10 @@ exports.getById = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
     try {
-        const { email, password } = req.body;
-        if (await service.UserService.getByEmail(email))
-            throw new ApiError(400, 'The user\'s email already exists.');
         const data = req.body;
-        data.password = data.password = await util.hashPasswordUtil.hashPassword({ password });
-        const result = await service.UserService.create(data);
+        const result = service.Order.create(data)
         res.status(201).json({
-            message: "Create user successfully",
+            message: "Create order successfully",
             data: result,
         });
     } catch (err) {
@@ -54,17 +50,17 @@ exports.delete = async (req, res, next) => {
     try {
         const id = req.params.id;
         if (!(mongoose.Types.ObjectId.isValid(id))) {
-            throw new ApiError(400, "User id is not valid");
+            throw new ApiError(400, "Order id is not valid");
         }
-        const result = await service.UserService.delete(id);
+        const result = await service.Order.delete(id);
         if (result.deletedCount)
             res.status(200).json({
-                message: "Delete user successfully",
+                message: "Delete order successfully",
                 data: result,
             });
         else
             res.status(400).json({
-                message: "User id not exist",
+                message: "Order id not exist",
                 data: result,
             });
     } catch (err) {
@@ -76,14 +72,14 @@ exports.update = async (req, res, next) => {
     try {
         const id = req.params.id;
         if (!(mongoose.Types.ObjectId.isValid(id))) {
-            throw new ApiError(400, "User id is not valid");
+            throw new ApiError(400, "Order id is not valid");
         }
         const data = req.body;
         if (data.password)
             data.password = await util.hashPasswordUtil.hashPassword({ password: data.password })
-        const result = await service.UserService.update({id: id, data});
+        const result = await service.Order.update({id: id, data});
         res.status(200).json({
-            message: "Update user successfully",
+            message: "Update order successfully",
             data: result,
         });
     } catch (err) {

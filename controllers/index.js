@@ -1,17 +1,17 @@
-const UserController = require('./UserController.js');
-const EmployeeController = require('./EmployeeController.js');
-const AuthController = require('./AuthController.js');
-const ProductController = require('./ProductController.js')
-const PublisherController = require('./PublisherController.js')
-const CartController = require('./CartController.js')
-const OrderController = require('./OrderController.js')
+const User = require('./user.js');
+const Employee = require('./employee.js');
+const Auth = require('./auth.js');
+const Product = require('./product.js')
+const Publisher = require('./publisher.js')
+const Cart = require('./cart.js')
+const Order = require('./order.js')
 
 module.exports = {
-    UserController,
-    EmployeeController,
-    AuthController,
-    ProductController,
-    PublisherController,
-    CartController,
-    OrderController,
+    User,
+    Employee,
+    Auth,
+    Product,
+    Publisher,
+    Cart,
+    Order,
 };

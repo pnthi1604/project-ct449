@@ -1,13 +1,28 @@
 const mongoose = require('mongoose');
-const ApiError = require('../error/ApiError.js');
+const ApiError = require('../error/apiError.js');
 const util = require('../utils/index.js')
 const service = require("../services/index.js")
 
+exports.getPublisher = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        publisher = await service.Product.getPublisher(id)
+        if (!publisher)
+            throw new ApiError(400, "Can not get publisher")
+        res.status(200).json({
+            message: "Get publisher successfully",
+            data: publisher
+        })
+    } catch (err) {
+        next(err)
+    }
+}
+
 exports.getAll = async (req, res, next) => {
     try {
-        const result = await service.PublisherService.getAll();
+        const result = await service.Product.getAll();
         res.status(200).json({
-            message: "Get all publisher successfully",
+            message: "Get all book successfully",
             data: result,
         });
     } catch (err) {
@@ -19,13 +34,13 @@ exports.getById = async (req, res, next) => {
     try {
         const id = req.params.id;
         if (!(mongoose.Types.ObjectId.isValid(id))) {
-            throw new ApiError(400, "Publisher id is not valid");
+            throw new ApiError(400, "Book id is not valid");
         }
-        const result = await service.PublisherService.getById(id);
+        const result = await service.Product.getById(id);
         if (!result)
-            throw new ApiError(400, "Publisher not exist");
+            throw new ApiError(400, "Book not exist");
         res.status(200).json({
-            message: "Get publisher successfully",
+            message: "Get book successfully",
             data: result,
         });
     } catch (err) {
@@ -35,14 +50,10 @@ exports.getById = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
     try {
-        const { email, password } = req.body;
-        if (await service.PublisherService.getByEmail(email))
-            throw new ApiError(400, 'The publisher\'s email already exists.');
         const data = req.body;
-        data.password = data.password = await util.hashPasswordUtil.hashPassword({ password });
-        const result = await service.PublisherService.create(data);
+        const result = await service.Product.create(data);
         res.status(201).json({
-            message: "Create publisher successfully",
+            message: "Create book successfully",
             data: result,
         });
     } catch (err) {
@@ -54,17 +65,17 @@ exports.delete = async (req, res, next) => {
     try {
         const id = req.params.id;
         if (!(mongoose.Types.ObjectId.isValid(id))) {
-            throw new ApiError(400, "Publisher id is not valid");
+            throw new ApiError(400, "Book id is not valid");
         }
-        const result = await service.PublisherService.delete(id);
+        const result = await service.Product.delete(id);
         if (result.deletedCount)
             res.status(200).json({
-                message: "Delete publisher successfully",
+                message: "Delete book successfully",
                 data: result,
             });
         else
             res.status(400).json({
-                message: "Publisher id not exist",
+                message: "Book id not exist",
                 data: result,
             });
     } catch (err) {
@@ -76,14 +87,12 @@ exports.update = async (req, res, next) => {
     try {
         const id = req.params.id;
         if (!(mongoose.Types.ObjectId.isValid(id))) {
-            throw new ApiError(400, "Publisher id is not valid");
+            throw new ApiError(400, "Book id is not valid");
         }
         const data = req.body;
-        if (data.password)
-            data.password = await util.hashPasswordUtil.hashPassword({ password: data.password })
-        const result = await service.PublisherService.update({id: id, data});
+        const result = await service.Product.update({id: id, data});
         res.status(200).json({
-            message: "Update publisher successfully",
+            message: "Update book successfully",
             data: result,
         });
     } catch (err) {

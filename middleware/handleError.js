@@ -1,4 +1,4 @@
-const ApiError = require('../error/ApiError.js');
+const ApiError = require('../error/apiError.js');
 const mongoose = require('mongoose');
 
 const handleError = (err) => {
