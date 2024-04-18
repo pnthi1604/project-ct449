@@ -18,19 +18,22 @@ app.get('/', (req, res) => {
     });
 });
 
-app.use('/', router.Auth);
-app.use('/user', router.User);
-app.use('/employee', router.Employee);
-app.use('/publisher', router.Publisher)
-app.use('/product', router.Product);
-app.use('/cart', router.Cart)
-app.use('/order', router.Order)
+app.use('/api/', router.Auth);
+app.use('/api/users', router.User);
+app.use('/api/employees', router.Employee);
+app.use('/api/publishers', router.Publisher)
+app.use('/api/products', router.Product);
+app.use("/api/images", router.Image)
+app.use('/api/carts', router.Cart)
+app.use('/api/orders', router.Order)
 
 app.use((req, res, next) => {
     return next(new ApiError(404, "Resource not found"));
 });
 app.use((err, req, res, next) => {
+    console.log({err});
     const { statusCode, message } = middleware.handleError(err);
+    console.log({ statusCode, message });
     return res.status(statusCode).json({
         message
     });

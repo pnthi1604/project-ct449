@@ -33,6 +33,9 @@ exports.getById = async (req, res, next) => {
 exports.create = async (req, res, next) => {
     try {
         const data = req.body;
+        const isExist = await service.Publisher.getByEmail(data.email);
+        if (isExist)
+            throw new ApiError(400, "Email is already taken");
         const result = await service.Publisher.create(data);
         res.status(201).json({
             message: "Create publisher successfully",

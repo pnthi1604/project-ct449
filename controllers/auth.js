@@ -1,9 +1,10 @@
 const ApiError = require('../error/apiError.js');
 const util = require('../utils/index.js')
 const service = require("../services/index.js")
+const emailValidator = require("email-validator");
 
-const adminRole = process.env.ADMIN_ROLE
-const userRole = process.env.USER_ROLE
+const adminRole = "admin"
+const userRole = "user"
 
 exports.register = async (req, res, next) => {
     try {
@@ -34,6 +35,10 @@ exports.register = async (req, res, next) => {
 exports.login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
+        if (emailValidator.validate(email) === false) {
+            throw new ApiError(400, "Email is invalid");
+        }
+
         const user = await service.User.getByEmail(email);
         const employee = await service.Employee.getByEmail(email)
         const correctPassword = await util.hashPassword.comparePassword({
@@ -42,20 +47,22 @@ exports.login = async (req, res, next) => {
         })
         if (!correctPassword)
             throw new ApiError(400, "Password is wrong");
+        
+        const data = {
+            id: user ? user.id : employee.id, 
+            email: user ? user.email : employee.email, 
+            role: user ? userRole : adminRole,
+        }
         util.jwt.createJWT(
             {
                 response: res,
-                data: {
-                    id: user ? user.id : employee.id, 
-                    email: user ? user.email : employee.email, 
-                    role: user ? userRole : adminRole,
-                },
+                data
             }
         )
 
         res.status(200).json({
             message: "Login successfully",
-            data: user ? user : employee,
+            data,
         });
     } catch (err) {
         next(err);

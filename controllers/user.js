@@ -75,8 +75,11 @@ exports.delete = async (req, res, next) => {
 exports.update = async (req, res, next) => {
     try {
         const id = req.params.id;
-        if (!(mongoose.Types.ObjectId.isValid(id))) {
+        if (!util.isObjectId(id)) {
             throw new ApiError(400, "User id is not valid");
+        }
+        if(!(await service.User.getById(id))) {
+            throw new ApiError(400, "User is not exist")
         }
         const data = req.body;
         if (data.password)

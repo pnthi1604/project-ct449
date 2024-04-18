@@ -1,15 +1,17 @@
-const User = require('./user.js');
-const Employee = require('./employee.js')
-const Publisher = require('./publisher.js')
-const Product = require('./product.js')
-const Cart = require('./cart.js')
-const Order = require('./order.js')
+const User = require("./user/index.js")
+const Employee = require('./employee/index.js')
+const Publisher = require('./publisher/index.js')
+const Product = require('./product/index.js')
+const Cart = require('./cart/index.js')
+const Order = require('./order/index.js')
+const Image = require('./image/index.js')
 
 module.exports = {
-    User,
-    Employee,
-    Publisher,
-    Product,
-    Cart,
-    Order,
+    User: User.User,
+    Employee: Employee.Employee,
+    Publisher: Publisher.Publisher,
+    Product: Product.Product,
+    Cart: Cart.Cart,
+    Order: Order.Order,
+    Image: Image.Image,
 };

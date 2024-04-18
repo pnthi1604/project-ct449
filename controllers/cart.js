@@ -4,7 +4,7 @@ const service = require("../services/index.js")
 
 exports.getAll = async (req, res, next) => {
     try {
-        const { userId } = req.body
+        const { userId } = req.params
         const result = await service.Cart.getAll(userId);
         res.status(200).json({
             message: "Get all cart successfully",
@@ -16,42 +16,64 @@ exports.getAll = async (req, res, next) => {
 };
 
 exports.add = async (req, res, next) => {
+    let have_create_cart = false
+
+    const data = req.body
+    data.userId = req.params.userId
+    data.productId = req.params.productId
+    const cartId = {
+        userId: data.userId,
+        productId: data.productId,
+        duration: data.duration,
+    }
+
     try {
-        const data = req.body
         if (!(util.isObjectId(data.userId)) || !(util.isObjectId(data.productId))) {
             throw new ApiError(400, "Cart id is not valid");
         }
-        const cartId = {
-            userId: data.userId,
-            productId: data.productId,
-        }
-        const cart = await service.Cart.getById(cartId)
-        const product = await service.ProductService.getById(data.productId)
+        //get cart and info product
+        let cart = await service.Cart.getById(cartId)
+        const product = await service.Product.getById(data.productId)
+        console.log({cart})
+        if (!product)
+            throw new ApiError(400, "Product is not exist")
+        if (!cart)
+            cart = await service.Cart.create(cartId)
+            have_create_cart = true
+
+        //process add quantity value
         if (!data.quantity)
             data.quantity = 1
         data.quantity = Math.min(data.quantity + cart.quantity, product.quantity)
         let result = null
-        if (!cart)
-            result = await service.Cart.create(data)
-        else {
-            result = await service.Cart.update(data);
-        }
+        if (data.quantity <= 0)
+            result = await service.Cart.delete(cartId)
+        else 
+            result = await service.Cart.update({cartId, data})
+
         res.status(200).json({
-            message: "Update cart successfully",
+            message: "Add cart successfully",
             data: result,
         });
     } catch (err) {
+        //rollback
+        if (have_create_cart) 
+            await service.Cart.delete(cartId)
+
         next(err)
     }
 }
 
 exports.update = async (req, res, next) => {
+    const data = req.body
+    data.userId = req.params.userId
+    data.productId = req.params.productId
+
     try {
-        const data = req.body;
         if (!(util.isObjectId(data.userId)) || !(util.isObjectId(data.productId))) {
             throw new ApiError(400, "Cart id is not valid");
         }
-        const product = await service.ProductService.getById(data.productId)
+        const product = await service.Product.getById(data.productId)
         if (!data.quantity)
             data.quantity = 1
         data.quantity = Math.min(product.quantity, data.quantity)
@@ -66,12 +88,13 @@ exports.update = async (req, res, next) => {
 };
 
 exports.delete = async (req, res, next) => {
+    const { cartId } = req.params
+
     try {
-        const data = req.body
-        if (!(util.isObjectId(data.userId)) || !(util.isObjectId(data.productId))) {
+        if (!(util.isObjectId(cartId))) {
             throw new ApiError(400, "Cart id is not valid");
         }
-        const result = await service.Cart.delete(id);
+        const result = await service.Cart.delete(cartId);
         if (result.deletedCount)
             res.status(200).json({
                 message: "Delete cart successfully",
@@ -86,3 +109,25 @@ exports.delete = async (req, res, next) => {
         next(err);
     }
 };
+
+// exports.deleteAll = async (req, res, next) => {
+//     const { userId } = req.params
+
+//     try {
+//         if (!(util.isObjectId(userId))) {
+//             throw new ApiError(400, "User id is not valid");
+//         }
+//         const all_cart = await service.Cart.getAll(userId)
+//         if (!all_cart[0])
+//             throw new ApiError(400, "Cart is empty")
+        
+//         const result = await service.Cart.deleteAll(userId)
+//         if (result.deletedCount)
+//             res.status(200).json({
+//                 message: "Delete all cart successfully",
+//                 data: result,
+//             });
+//     } catch (err) {
+//         next(err);
+//     }
+// };

@@ -5,8 +5,8 @@ const middleware = require('../middleware/index.js')
 const router = express.Router();
 
 router.route('/')
-    .get(middleware.auth.adminAuth, controller.User.getAll)
-    .post(controller.User.create)
+    .get(middleware.auth.adminAuth, controller.Order.getAll)
+    .post(middleware.auth.userAuth, controller.Order.create)
 
 router.route('/:id')
     .get(controller.User.getById)

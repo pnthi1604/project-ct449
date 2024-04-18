@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken');
 const ApiError = require('../error/apiError.js');
 
 const jwtSecret = process.env.JWT_SECRET
-const adminRole = process.env.ADMIN_ROLE
-const userRole = process.env.USER_ROLE
+const adminRole = "admin"
+const userRole = "user"
 
 const getRole = (token) => {
     if (!token)

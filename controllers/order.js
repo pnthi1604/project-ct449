@@ -17,8 +17,8 @@ exports.getAll = async (req, res, next) => {
 
 exports.getById = async (req, res, next) => {
     try {
-        const id = req.params.id;
-        if (!(mongoose.Types.ObjectId.isValid(id))) {
+        const { id } = req.params
+        if (!util.isObjectId(id)) {
             throw new ApiError(400, "Order id is not valid");
         }
         const result = await service.Order.getById(id);
