@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const ApiError = require('../error/apiError.js');
 const service = require("../services/index.js")
-const util = require("../utils/handleImg.js")
+const util = require("../utils/index.js")
 
 exports.getPublisher = async (req, res, next) => {
     try {
@@ -23,7 +23,7 @@ exports.getAll = async (req, res, next) => {
         let products = await service.Product.getAll();
         products = await Promise.all(products.map(async (product) => {
             //render image url
-            const imageUrl = util.renderImageUrl(product.imageId.contenType, product.imageId.data);
+            const imageUrl = util.handleImg.renderImageUrl(product.imageId.contenType, product.imageId.data);
             product._doc.imageId._doc.imageUrl = imageUrl;
             return product;
         }));
@@ -43,12 +43,14 @@ exports.getById = async (req, res, next) => {
         if (!(mongoose.Types.ObjectId.isValid(id))) {
             throw new ApiError(400, "Book id is not valid");
         }
-        const result = await service.Product.getById(id);
-        if (!result)
+        const product = await service.Product.getById(id);
+        if (!product)
             throw new ApiError(400, "Book not exist");
+        const imageUrl = util.handleImg.renderImageUrl(product.imageId.contenType, product.imageId.data);
+        product._doc.imageId._doc.imageUrl = imageUrl;
         res.status(200).json({
             message: "Get book successfully",
-            data: result,
+            data: product,
         });
     } catch (err) {
         next(err);

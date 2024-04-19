@@ -11,11 +11,6 @@ const CartSchema = new mongoose.Schema({
         ref: "Product",
         required: [true, "Product id is required"],
     },
-    duration: {
-        type: Number,
-        max: 90,
-        default: 0,
-    },
     quantity: {
         type: Number,
         default: 0,

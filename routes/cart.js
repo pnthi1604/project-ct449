@@ -10,11 +10,9 @@ router.route("/:userId")
 
 router.route("/:userId/:productId")
     .post(middleware.auth.userAuth, controller.Cart.update)
-
-router.route("/add-to-cart/:userId/:productId")
-    .post(middleware.auth.userAuth, controller.Cart.add)
-
-router.route("/:cartId")
     .delete(middleware.auth.userAuth, controller.Cart.delete)
+
+router.route("/add-cart/:userId/:productId")
+    .post(middleware.auth.userAuth, controller.Cart.add)
 
 module.exports = router

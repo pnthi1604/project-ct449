@@ -5,23 +5,34 @@ exports.create = async (cart) => {
     return result;
 }
 
-exports.getById = async (cartId) => {
-    const result = await model.Cart.findOne(cartId)
+exports.getById = async ({cartId, userId, productId}) => {
+    let result = null;
+    if (cartId) 
+        result = await model.Cart.findOne(cartId).populate("productId userId");
+    else if (userId && productId)
+        result = await model.Cart.findOne({ userId, productId }).populate("productId userId");
     return result
 }
 
 exports.getAll = async (userId) => {
-    const result = await model.Cart.find({ userId });
+    const result = await model.Cart.find({ userId }).populate("productId userId");
     return result;
 };
 
-exports.update = async ({cartId, data}) => {
-    const result = await model.Cart.findOneAndUpdate(cartId, data)
+exports.update = async (userId, productId, data) => {
+    const result = await model.Cart.findOneAndUpdate({
+        userId,
+        productId
+    }, data, { new: true });
     return result
 }
 
-exports.delete = async (cartId) => {
-    const result = await model.Cart.deleteOne({_id: cartId});
+exports.delete = async (userId, productId) => {
+    const result = await model.Cart.deleteOne({
+        userId,
+        productId
+    
+    });
     return result;
 }
 

@@ -23,6 +23,7 @@ const checkRole = (role, target, next) => {
 exports.adminAuth = async (req, res, next) => {
     try {
         const role = getRole(req.cookies.jwt)
+        console.log({role})
         return checkRole(role, adminRole, next)
     } catch (err) {
         next(err);
