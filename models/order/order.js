@@ -6,22 +6,31 @@ const OrderSchema = new mongoose.Schema({
         ref: "User",
         required: [true, "User id is required"],
     },
-    orderItems: [{
+    orderItemsId: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'OrderItem',
     }],
-    orderStatus: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'OrderStatus',
-    }],
-})
+    orderStatuses: [{
+        title: {
+            type: String,
+            enum: ["Đang xử lý", "Đang giao hàng", "Đã nhận hàng", "Đã hủy"],
+            default: "Đang xử lý",
+        },
+        createDate: {
+            type: Date,
+            default: Date.now
+        }
+    }]
+});
 
-OrderSchema.pre('find', function() {
-    this.populate({
-        path: 'orderStatus',
-        options: { sort: { createDate: -1 } }
-    });
-})
+OrderSchema.methods.sortOrderStatusByCreateDate = function() {
+    this.orderStatus.sort((a, b) => a.createDate - b.createDate);
+};
+
+OrderSchema.pre('findById', function(next) {
+    this.sortOrderStatusByCreateDate();
+    next();
+});
 
 const Order = mongoose.model("Order", OrderSchema);
-module.exports = Order
+module.exports = Order;

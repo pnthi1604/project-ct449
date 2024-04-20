@@ -14,14 +14,12 @@ const OrderItemSchema = new mongoose.Schema({
         type: Number,
         required: [true, "Price is required"],
     },
-    duration: {
-        type: Number,
-        required: [true, "Duration (Days) is required"]
+    borrowDate: {
+        type: Date,
     },
-    status: {
-        type: String,
-        default: "Đang mượn",
-        enum: ["Đang mượn", "Đã trả", "Quá hạn"],
+    borrowingTime: {
+        type: Number,
+        required: [true, "Borrowing time is required"],
     },
 })
 

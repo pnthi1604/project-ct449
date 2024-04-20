@@ -13,7 +13,7 @@ exports.register = async (req, res, next) => {
             throw new ApiError(400, 'The user\'s email already exists.');
         data.password = await util.hashPassword.hashPassword({ password: data.password })
         const user = await service.User.create(data);
-        util.jwt.createJWT(
+        const token = util.jwt.createJWT(
             {
                 response: res,
                 data: {
@@ -26,6 +26,7 @@ exports.register = async (req, res, next) => {
         res.status(200).json({
             message: "Register successfully",
             data: user,
+            token,
         });
     } catch (err) {
         next(err);
@@ -46,14 +47,14 @@ exports.login = async (req, res, next) => {
             hashPassword: user ? user.password : employee.password,
         })
         if (!correctPassword)
-            throw new ApiError(400, "Password is wrong");
+            throw new ApiError(400, "Password is wrong")
         
         const data = {
             id: user ? user.id : employee.id, 
             email: user ? user.email : employee.email, 
             role: user ? userRole : adminRole,
         }
-        util.jwt.createJWT(
+        const token = util.jwt.createJWT(
             {
                 response: res,
                 data
@@ -63,6 +64,7 @@ exports.login = async (req, res, next) => {
         res.status(200).json({
             message: "Login successfully",
             data,
+            token,
         });
     } catch (err) {
         next(err);

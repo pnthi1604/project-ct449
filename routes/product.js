@@ -9,6 +9,9 @@ router.route('/')
     .get(controller.Product.getAll)
     .post(middleware.auth.adminAuth, controller.Product.create)
 
+router.route("/admin")
+    .get(middleware.auth.adminAuth, controller.Product.getAll)
+
 router.route('/:id')
     .get(controller.Product.getById)
     .put(middleware.auth.adminAuth, controller.Product.update)

@@ -3,86 +3,126 @@ const ApiError = require('../error/apiError.js');
 const util = require('../utils/index.js')
 const service = require("../services/index.js")
 
+exports.create = async (req, res, next) => {
+    const currentDate = new Date();
+    const { userId, productId, quantity, price, borrowingTime } = req.body;
+    try {
+        // check userId and productId
+        if (!util.isObjectId(userId) || !util.isObjectId(productId))
+            throw new ApiError(400, "Invalid userId or productId");
+
+        // check userId exist
+        const user = await service.User.getById(userId);
+        if (!user)
+            throw new ApiError(404, "User not found");
+
+        // check productId exist
+        const product = await service.Product.getById(productId);
+        if (!product)
+            throw new ApiError(404, "Product not found");
+
+        // create orderItem
+        const orderItem = await service.OrderItem.create({ productId, quantity, price, borrowingTime });
+        if (!orderItem)
+            throw new ApiError(500, "Create orderItem failed");
+
+        // create order
+        const order = await service.Order.create({
+            userId,
+            OrderItemsId: [
+                orderItem._id
+            ],
+            orderStatuses: [{
+                title: "Đang xử lý",
+                createDate: currentDate
+            }]
+        })
+
+        if (!order)
+            throw new ApiError(500, "Create order failed");
+        
+        res.status(200).json({
+            message: "Create order successfully",
+            data: order,
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.getAllByUserId = async (req, res, next) => {
+    try {
+        const { userId } = req.body
+
+        // check user
+        if (!util.isObjectId(userId))
+            throw new ApiError(400, "Invalid userId");
+
+        const user = await service.User.getById(userId);
+        if (!user)
+            throw new ApiError(404, "User not found");
+
+        const orders = await service.Order.getAllByUserId(userId);
+        if (!orders)
+            throw new ApiError(500, "Get orders failed");
+
+        res.status(200).json({
+            message: "Get orders successfully",
+            data: orders,
+        })
+    } catch(error) {
+        next(error)
+    }
+}
+
 exports.getAll = async (req, res, next) => {
     try {
-        const result = await service.Order.getAll();
+        const orders = await service.Order.getAll();
+        if (!orders)
+            throw new ApiError(500, "Get orders failed");
+
         res.status(200).json({
-            message: "Get all order successfully",
-            data: result,
-        });
-    } catch (err) {
-        next(err);
+            message: "Get orders successfully",
+            data: orders,
+        })
+    } catch(error) {
+        next(error)
     }
-};
-
-exports.getById = async (req, res, next) => {
-    try {
-        const { id } = req.params
-        if (!util.isObjectId(id)) {
-            throw new ApiError(400, "Order id is not valid");
-        }
-        const result = await service.Order.getById(id);
-        if (!result)
-            throw new ApiError(400, "Order not exist");
-        res.status(200).json({
-            message: "Get order successfully",
-            data: result,
-        });
-    } catch (err) {
-        next(err);
-    }
-};
-
-exports.create = async (req, res, next) => {
-    try {
-        const data = req.body;
-        const result = service.Order.create(data)
-        res.status(201).json({
-            message: "Create order successfully",
-            data: result,
-        });
-    } catch (err) {
-        next(err);
-    }
-};
-
-exports.delete = async (req, res, next) => {
-    try {
-        const id = req.params.id;
-        if (!(mongoose.Types.ObjectId.isValid(id))) {
-            throw new ApiError(400, "Order id is not valid");
-        }
-        const result = await service.Order.delete(id);
-        if (result.deletedCount)
-            res.status(200).json({
-                message: "Delete order successfully",
-                data: result,
-            });
-        else
-            res.status(400).json({
-                message: "Order id not exist",
-                data: result,
-            });
-    } catch (err) {
-        next(err);
-    }
-};
+}
 
 exports.update = async (req, res, next) => {
     try {
-        const id = req.params.id;
-        if (!(mongoose.Types.ObjectId.isValid(id))) {
-            throw new ApiError(400, "Order id is not valid");
-        }
-        const data = req.body;
-        if (data.password)
-            data.password = await util.hashPasswordUtil.hashPassword({ password: data.password })
-        const result = await service.Order.update({id: id, data});
+        const { id } = req.params;
+        const { orderStatus } = req.body;
+
+        // check id
+        if (!util.isObjectId(id))
+            throw new ApiError(400, "Invalid id");
+
+        // get order
+        const order = await service.Order.getById(id);
+        if (!order)
+            throw new ApiError(404, "Order not found");
+
+        // update order
+        order.orderStatuses.push({
+            title: orderStatus,
+            createDate: new Date()
+        });
+
+        const results = await service.Order.update({
+            _id: id,
+            data: order
+        });
+
+        if (!results)
+            throw new ApiError(500, "Update order failed");
+
         res.status(200).json({
             message: "Update order successfully",
-            data: result,
-        });
-    } catch (err) {
-        next(err);
+            data: results,
+        })
+    } catch(error) {
+        next(error)
     }
-};
+}

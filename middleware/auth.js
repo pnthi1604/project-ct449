@@ -14,16 +14,15 @@ const getRole = (token) => {
 
 const checkRole = (role, target, next) => {
     if (!role)
-        throw new ApiError(401, "Not authorized, please log in or register");
+        throw new ApiError(401, "Hết phiên đăng nhập, vui lòng đăng nhập hoặc đăng ký");
     if (role != target)
-        throw new ApiError(401, "Not authorized");
+        throw new ApiError(401, "Tài khoản của bạn không có quyền truy cập, vui lòng đăng nhập với tài khoản có quyền truy cập");
     return next()
 }
 
 exports.adminAuth = async (req, res, next) => {
     try {
         const role = getRole(req.cookies.jwt)
-        console.log({role})
         return checkRole(role, adminRole, next)
     } catch (err) {
         next(err);

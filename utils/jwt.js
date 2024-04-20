@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const jwtSecret = process.env.JWT_SECRET;
 
 const maxAge = 3 * 60 * 60
+// const maxAge = 5
 
 const createToken = (data) => {
     return jwt.sign(data, jwtSecret, {
@@ -15,6 +16,7 @@ const createJWT = ({ response, data }) => {
         httpOnly: true,
         maxAge: maxAge * 1000,
     });
+    return token
 }
 
 const resetJWT = ({ response }) => {
