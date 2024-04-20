@@ -13,23 +13,19 @@ const OrderSchema = new mongoose.Schema({
     orderStatuses: [{
         title: {
             type: String,
-            enum: ["Đang xử lý", "Đang giao hàng", "Đã nhận hàng", "Đã hủy"],
+            enum: ["Đang xử lý", "Đang giao hàng", "Đã nhận hàng", "Yêu cầu hủy", "Đã hủy"],
             default: "Đang xử lý",
         },
         createDate: {
             type: Date,
-            default: Date.now
-        }
+            default: new Date(),
+        },
+        // employeeId update orderStatus
+        activeBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Employee",
+        },
     }]
-});
-
-OrderSchema.methods.sortOrderStatusByCreateDate = function() {
-    this.orderStatus.sort((a, b) => a.createDate - b.createDate);
-};
-
-OrderSchema.pre('findById', function(next) {
-    this.sortOrderStatusByCreateDate();
-    next();
 });
 
 const Order = mongoose.model("Order", OrderSchema);

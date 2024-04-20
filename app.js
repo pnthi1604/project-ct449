@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
     });
 });
 
-app.use('/api/', router.Auth);
+app.use('/api', router.Auth);
 app.use('/api/users', router.User);
 app.use('/api/employees', router.Employee);
 app.use('/api/publishers', router.Publisher)

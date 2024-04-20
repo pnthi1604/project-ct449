@@ -16,8 +16,18 @@ exports.getAll = async (req, res, next) => {
             cart._doc.productId._doc = product
             const imageUrl = util.handleImg.renderImageUrl(cart._doc.productId._doc.imageId._doc.contentType, cart._doc.productId._doc.imageId._doc.data);
             cart._doc.productId._doc.imageId._doc.imageUrl = imageUrl;
+            cart._doc.quantity = Math.min(cart._doc.quantity, cart._doc.productId._doc.quantity)
+
+            // if quantity == 0 => delete cart
+            if (cart._doc.quantity === 0) {
+                await service.Cart.delete(userId, cart._doc.productId._doc._id)
+                return null
+            }
             return cart
         }));
+
+        // filter cart is null
+        carts = carts.filter(cart => cart !== null)
 
         res.status(200).json({
             message: "Get all cart successfully",

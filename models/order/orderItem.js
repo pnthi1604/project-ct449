@@ -17,6 +17,9 @@ const OrderItemSchema = new mongoose.Schema({
     borrowDate: {
         type: Date,
     },
+    returnDate: {
+        type: Date,
+    },
     borrowingTime: {
         type: Number,
         required: [true, "Borrowing time is required"],

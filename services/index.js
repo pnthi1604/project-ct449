@@ -13,5 +13,6 @@ module.exports = {
     Publisher: Publisher.Publisher,
     Cart: Cart.Cart,
     Order: Order.Order,
+    OrderItem: Order.OrderItem,
     Image: Image.Image,
 }

@@ -7,7 +7,7 @@ exports.create = async (order) => {
 }
 
 exports.getById = async (id) => {
-    const result = await model.Order.findOne({ _id: id });
+    const result = await model.Order.findOne({ _id: id }).populate("orderItemsId orderStatuses");
     return result
 }
 

@@ -28,6 +28,7 @@ exports.delete = async (id) => {
 }
 
 exports.update = async ({id, data}) => {
+    console.log({id, data})
     const isExist = await this.getById(id);
     let result = null;
     if (!isExist)

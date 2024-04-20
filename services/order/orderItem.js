@@ -2,7 +2,16 @@ const model = require("../../models/index.js")
 
 exports.create = async (orderItem) => {
     // productId, quantity, price, borrowDate, returnDate
+    console.log("vao ham")
     const result = await model.OrderItem.create(orderItem);
+    console.log({
+        "order item": result,
+    })
+    return result
+}
+
+exports.getById = async (id) => {
+    const result = await model.OrderItem.findOne({ _id: id }).populate("productId")
     return result
 }
 

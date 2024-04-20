@@ -5,12 +5,15 @@ const middleware = require('../middleware/index.js')
 const router = express.Router();
 
 router.route('/')
-    .get(middleware.auth.adminAuth, controller.Order.getAll)
     .post(middleware.auth.userAuth, controller.Order.create)
 
-router.route('/:id')
-    .get(controller.User.getById)
-    .put(controller.User.update)
-    .delete(controller.User.delete)
+router.route('/admin')
+    .get(middleware.auth.adminAuth, controller.Order.getAll)
+
+router.route("/admin/:adminId/:userId")
+    .put(middleware.auth.adminAuth, controller.Order.update)
+
+router.route("/:userId")
+    .get(middleware.auth.userAuth, controller.Order.getAllByUserId)
 
 module.exports = router;
