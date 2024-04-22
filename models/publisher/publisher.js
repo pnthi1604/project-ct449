@@ -4,14 +4,10 @@ const validator = require('validator')
 const PublisherSchema = new mongoose.Schema({
     name: {
         type: String,
-        minlength: [8, "Name must be at least 8 characters"],
-        maxlength: [50, "Name must be at most 50 characters"],
         required: [true, "Name is required"],
     },
     address: {
         type: String,
-        minlength: [8, "Address must be at least 8 characters"],
-        maxlength: [50, "Address must be at most 50 characters"],
         required: [true, "Address is required"],
     },
     email: {

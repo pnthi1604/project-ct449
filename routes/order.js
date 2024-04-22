@@ -10,10 +10,14 @@ router.route('/')
 router.route('/admin')
     .get(middleware.auth.adminAuth, controller.Order.getAll)
 
-router.route("/admin/:adminId/:userId")
+router.route("/admin/:adminId/:id")
     .put(middleware.auth.adminAuth, controller.Order.update)
 
-router.route("/:userId")
+router.route("/user/:id")
     .get(middleware.auth.userAuth, controller.Order.getAllByUserId)
+    .put(middleware.auth.userAuth, controller.Order.update)
+
+router.route('/:orderId')
+    .get(controller.Order.getById)
 
 module.exports = router;

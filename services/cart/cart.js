@@ -8,7 +8,7 @@ exports.create = async (cart) => {
 exports.getById = async ({cartId, userId, productId}) => {
     let result = null;
     if (cartId) 
-        result = await model.Cart.findOne(cartId).populate("productId userId");
+        result = await model.Cart.findOne({ _id: cartId }).populate("productId userId");
     else if (userId && productId)
         result = await model.Cart.findOne({ userId, productId }).populate("productId userId");
     return result
@@ -27,12 +27,16 @@ exports.update = async (userId, productId, data) => {
     return result
 }
 
-exports.delete = async (userId, productId) => {
-    const result = await model.Cart.deleteOne({
-        userId,
-        productId
-    
-    });
+exports.delete = async ({cartId, userId, productId}) => {
+    let result = null;
+    if (cartId) 
+        result = await model.Cart.deleteOne({ _id: cartId });
+    else if (userId && productId)
+        result = await model.Cart.deleteOne({
+            userId,
+            productId
+        
+        });
     return result;
 }
 

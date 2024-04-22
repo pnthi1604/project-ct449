@@ -17,7 +17,8 @@ exports.getAll = async (req, res, next) => {
 
 exports.getById = async (req, res, next) => {
     try {
-        const id = req.params.id;
+        const { id } = req.params
+        console.log({ "id in get by id employee" : id })
         if (!(mongoose.Types.ObjectId.isValid(id))) {
             throw new ApiError(400, "Employee id is not valid");
         }

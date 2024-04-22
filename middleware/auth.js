@@ -13,6 +13,7 @@ const getRole = (token) => {
 }
 
 const checkRole = (role, target, next) => {
+    console.log({role, target}) 
     if (!role)
         throw new ApiError(401, "Hết phiên đăng nhập, vui lòng đăng nhập hoặc đăng ký");
     if (role != target)

@@ -17,7 +17,4 @@ router.route('/:id')
     .put(middleware.auth.adminAuth, controller.Product.update)
     .delete(middleware.auth.adminAuth, controller.Product.delete)
 
-router.route("/publisher/:id")
-    .get(middleware.auth.adminAuth, controller.Product.getPublisher)
-
 module.exports = router;

@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const ProductSchema = new mongoose.Schema({
     name: {
         type: String,
-        maxlength: [50, "Name must be at most 50 characters"],
         required: [true, "Name is required"],
     },
     imageId: {
@@ -30,8 +29,6 @@ const ProductSchema = new mongoose.Schema({
     },
     author: {
         type: String,
-        minlength: [8, "Author must be at least 8 characters"],
-        maxlength: [50, "Author must be at most 50 characters"],
         required: [true, "Author is required"],
     },
     description: {

@@ -28,9 +28,16 @@ exports.getById = async (req, res, next) => {
     try {
         const id = req.params.id;
         const result = await service.Image.getById(id);
+        if (!result) {
+            throw new ApiError(400, "Image not found");
+        }
+        const imageUrl = util.handleImg.renderImageUrl(result.contentType, result.data);
         res.status(200).json({
             message: "Image found",
-            data: result,
+            data: {
+                ...result,
+                imageUrl,
+            }
         });
     } catch (err) {
         next(err)

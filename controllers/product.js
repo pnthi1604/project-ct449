@@ -3,21 +3,6 @@ const ApiError = require('../error/apiError.js');
 const service = require("../services/index.js")
 const util = require("../utils/index.js")
 
-exports.getPublisher = async (req, res, next) => {
-    try {
-        const id = req.params.id;
-        publisher = await service.Product.getPublisher(id)
-        if (!publisher)
-            throw new ApiError(400, "Can not get publisher")
-        res.status(200).json({
-            message: "Get publisher successfully",
-            data: publisher
-        })
-    } catch (err) {
-        next(err)
-    }
-}
-
 exports.getAll = async (req, res, next) => {
     try {
         let products = await service.Product.getAll();
