@@ -13,10 +13,9 @@ const getRole = (token) => {
 }
 
 const checkRole = (role, target, next) => {
-    console.log({role, target}) 
     if (!role)
         throw new ApiError(401, "Hết phiên đăng nhập, vui lòng đăng nhập hoặc đăng ký");
-    if (role != target)
+    if (!target.includes(role))
         throw new ApiError(401, "Tài khoản của bạn không có quyền truy cập, vui lòng đăng nhập với tài khoản có quyền truy cập");
     return next()
 }
@@ -24,7 +23,7 @@ const checkRole = (role, target, next) => {
 exports.adminAuth = async (req, res, next) => {
     try {
         const role = getRole(req.cookies.jwt)
-        return checkRole(role, adminRole, next)
+        return checkRole(role, [adminRole], next)
     } catch (err) {
         next(err);
     }
@@ -33,8 +32,17 @@ exports.adminAuth = async (req, res, next) => {
 exports.userAuth = async (req, res, next) => {
     try {
         const role = getRole(req.cookies.jwt)
-        return checkRole(role, userRole, next)
+        return checkRole(role, [userRole], next)
     } catch (err) {
         next(err);
     }
 };
+
+exports.userOrAdminAuth = async (req, res, next) => {
+    try {
+        const role = getRole(req.cookies.jwt)
+        return checkRole(role, [userRole, adminRole], next)
+    } catch (err) {
+        next(err);
+    }
+}

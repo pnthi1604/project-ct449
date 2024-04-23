@@ -5,6 +5,7 @@ const Product = require('./product/index.js')
 const Cart = require('./cart/index.js')
 const Order = require('./order/index.js')
 const Image = require('./image/index.js')
+const ReturnProduct = require("./returnProduct/index.js")
 
 module.exports = {
     User: User.User,
@@ -15,4 +16,5 @@ module.exports = {
     Order: Order.Order,
     OrderItem: Order.OrderItem,
     Image: Image.Image,
+    ReturnProduct: ReturnProduct.ReturnProduct,
 };

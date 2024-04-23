@@ -193,6 +193,7 @@ exports.update = async (req, res, next) => {
             activeBy: adminId ? adminId : null,
         });
 
+        // update orderItemsId with status == "Đang giao hàng"
         if (orderStatus.title == "Đang giao hàng") {
             order.orderItemsId = await Promise.all(order.orderItemsId.map(async (orderItemId) => {
                 // update product
@@ -209,18 +210,6 @@ exports.update = async (req, res, next) => {
                     throw new ApiError(400, "Update product failed")
                 }
 
-                // update borrowDate and returnDate for orderItem
-                const borrowDate = new Date()
-                let returnDate = new Date(borrowDate)
-                returnDate.setDate(returnDate.getDate() + orderItem.borrowingTime)
-                orderItem.borrowDate = borrowDate
-                orderItem.returnDate = returnDate
-                console.log({
-                    borrowDate,
-                    returnDate,
-                    borrowingTime: orderItem.borrowingTime,
-                })
-
                 const resUpdateOrderItem = await service.OrderItem.update({
                     id: orderItemId,
                     data: orderItem,
@@ -231,6 +220,32 @@ exports.update = async (req, res, next) => {
 
                 return orderItemId
             }))
+        } else if (orderStatus.title == "Đã nhận hàng") {
+            // get all productId, returnDate, borrowDate of orederItemsId
+            const returnProducts = order.orderItemsId.map(orderItem => {
+                // update borrowDate and returnDate for orderItem
+                const borrowDate = new Date()
+                let returnDate = new Date(borrowDate)
+                returnDate.setDate(returnDate.getDate() + orderItem.borrowingTime)
+                orderItem.borrowDate = borrowDate
+                orderItem.returnDate = returnDate
+
+                return {
+                    userId: order.userId,
+                    productId: orderItem.productId,
+                    returnDate: orderItem.returnDate,
+                    borrowDate: orderItem.borrowDate,
+                }
+            })
+
+            // create returnProduct
+            const resCreateReturnProduct = await Promise.all(returnProducts.map(async (returnProduct) => {
+                const res = await service.ReturnProduct.create(returnProduct)
+                return res
+            }));
+
+            if (!resCreateReturnProduct)
+                throw new ApiError(400, "Create return product failed")
         }
 
         const results = await service.Order.update({

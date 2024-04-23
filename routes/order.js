@@ -18,6 +18,6 @@ router.route("/user/:id")
     .put(middleware.auth.userAuth, controller.Order.update)
 
 router.route('/:orderId')
-    .get(controller.Order.getById)
+    .get(middleware.auth.userOrAdminAuth, controller.Order.getById)
 
 module.exports = router;

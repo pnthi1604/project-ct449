@@ -26,6 +26,7 @@ app.use('/api/products', router.Product);
 app.use("/api/images", router.Image)
 app.use('/api/carts', router.Cart)
 app.use('/api/orders', router.Order)
+app.use('/api/return-products', router.ReturnProduct)
 
 app.use((req, res, next) => {
     return next(new ApiError(404, "Resource not found"));

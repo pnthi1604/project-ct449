@@ -6,6 +6,7 @@ const Publisher = require('./publisher.js')
 const Cart = require('./cart.js')
 const Order = require('./order.js')
 const Image = require('./image.js')
+const ReturnProduct = require("./returnProduct.js")
 
 module.exports = {
     User,
@@ -15,5 +16,6 @@ module.exports = {
     Publisher,
     Cart,
     Order,
-    Image
+    Image,
+    ReturnProduct,
 };
