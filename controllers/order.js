@@ -193,7 +193,7 @@ exports.update = async (req, res, next) => {
             activeBy: adminId ? adminId : null,
         });
 
-        if (orderStatus.title == "Đã nhận hàng") {
+        if (orderStatus.title == "Đang giao hàng") {
             order.orderItemsId = await Promise.all(order.orderItemsId.map(async (orderItemId) => {
                 // update product
                 const orderItem = await service.OrderItem.getById(orderItemId)
