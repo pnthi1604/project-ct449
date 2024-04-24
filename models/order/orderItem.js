@@ -16,9 +16,11 @@ const OrderItemSchema = new mongoose.Schema({
     },
     borrowDate: {
         type: Date,
+        default:  null,
     },
     returnDate: {
         type: Date,
+        default: null,
     },
     borrowingTime: {
         type: Number,

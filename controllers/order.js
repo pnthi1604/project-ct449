@@ -221,20 +221,25 @@ exports.update = async (req, res, next) => {
                 return orderItemId
             }))
         } else if (orderStatus.title == "Đã nhận hàng") {
-            // get all productId, returnDate, borrowDate of orederItemsId
-            const returnProducts = order.orderItemsId.map(orderItem => {
+            order.orderItemsId = order.orderItemsId.map(orderItem => {
                 // update borrowDate and returnDate for orderItem
                 const borrowDate = new Date()
                 let returnDate = new Date(borrowDate)
                 returnDate.setDate(returnDate.getDate() + orderItem.borrowingTime)
                 orderItem.borrowDate = borrowDate
                 orderItem.returnDate = returnDate
+                return orderItem
+            })
 
+            // handle return product
+            // get all productId, returnDate, borrowDate of orederItemsId
+            const returnProducts = order.orderItemsId.map(orderItem => {
                 return {
                     userId: order.userId,
                     productId: orderItem.productId,
                     returnDate: orderItem.returnDate,
                     borrowDate: orderItem.borrowDate,
+                    quantity: orderItem.quantity,
                 }
             })
 
@@ -252,6 +257,10 @@ exports.update = async (req, res, next) => {
             _id: orderId,
             data: order
         });
+
+        console.log({
+            "order.orderItemsId": results.orderItemsId,
+        })
 
         if (!results)
             throw new ApiError(500, "Update order failed");

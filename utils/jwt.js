@@ -15,6 +15,8 @@ const createJWT = ({ response, data }) => {
     response.cookie("jwt", token, {
         httpOnly: true,
         maxAge: maxAge * 1000,
+        sameSite: 'None',
+        secure: true,
     });
     return token
 }

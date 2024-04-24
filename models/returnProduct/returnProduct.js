@@ -12,6 +12,10 @@ const returnProductSchema = new Schema({
         ref: 'Product',
         required: true
     },
+    quantity: {
+        type: Number,
+        default: 1,
+    },
     status: {
         type: String,
         enum: ['Đã trả', 'Đang mượn', 'Trễ hạn'],
