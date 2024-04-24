@@ -73,6 +73,23 @@ exports.update = async (req, res, next) => {
         if (!util.isObjectId(id))
             throw new ApiError(400, "Invalid id");
         const data = req.body;
+
+        // handle status == "Đã trả"
+        if (data.status == "Đã trả") {
+            const { quantity, productId } = data;
+            // update product quantity
+            const product = await service.Product.getById(productId);
+            if (!product)
+                throw new ApiError(404, "Product not found");
+            const newQuantity = product.quantity + quantity;
+            const result = await service.Product.update({
+                id: productId,
+                data: { quantity: newQuantity }
+            });
+            if (!result)
+                throw new ApiError(400, "Failed to update product quantity");
+        }
+
         const result = await service.ReturnProduct.update(id, data);
         if (!result)
             throw new ApiError(400, "Failed to update return product");

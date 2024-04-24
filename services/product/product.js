@@ -18,7 +18,13 @@ exports.getAll = async () => {
 };
 
 exports.getById = async (id) => {
+    console.log({
+        id
+    })
     const result = await model.Product.findOne({ _id: id }).populate("publisherId imageId");
+    console.log({
+        result
+    })
     return result;
 };
 
@@ -28,7 +34,6 @@ exports.delete = async (id) => {
 }
 
 exports.update = async ({id, data}) => {
-    console.log({id, data})
     const isExist = await this.getById(id);
     let result = null;
     if (!isExist)
