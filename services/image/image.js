@@ -11,13 +11,7 @@ exports.getById = async (id) => {
 };
 
 exports.delete = async (id) => {
-    console.log({
-        "id anh can phai xoa": id,
-    })
     const result = await model.Image.deleteOne({ _id: id });
-    console.log({
-        "ket qua xoa o services img": result,
-    })
     return result;
 }
 

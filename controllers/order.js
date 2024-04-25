@@ -90,7 +90,6 @@ exports.extractOrder = async (order) => {
 
 exports.getById = async (req, res, next) => {
     try {
-        console.log({ params: req.params })
         const { orderId } = req.params;
 
         // check id
@@ -257,10 +256,6 @@ exports.update = async (req, res, next) => {
             _id: orderId,
             data: order
         });
-
-        console.log({
-            "order.orderItemsId": results.orderItemsId,
-        })
 
         if (!results)
             throw new ApiError(500, "Update order failed");

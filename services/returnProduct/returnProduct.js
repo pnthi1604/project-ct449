@@ -16,9 +16,6 @@ exports.getById = async (returnProductId) => {
 }
 
 exports.getByUserId = async (userId) => {
-    console.log({
-        userId_in_returnProduct: userId
-    })
     const results = await model.ReturnProduct.find({ userId }).populate("productId");
     return results;
 }

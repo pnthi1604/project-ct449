@@ -17,7 +17,6 @@ exports.getAll = async (req, res, next) => {
 }
 
 exports.create = async (req, res, next) => {
-    console.log({ service })
     try {
         const returnProduct = req.body;
         const result = await service.ReturnProduct.create(returnProduct);

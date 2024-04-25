@@ -18,13 +18,7 @@ exports.getAll = async () => {
 };
 
 exports.getById = async (id) => {
-    console.log({
-        id
-    })
     const result = await model.Product.findOne({ _id: id }).populate("publisherId imageId");
-    console.log({
-        result
-    })
     return result;
 };
 
